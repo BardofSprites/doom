@@ -1,0 +1,246 @@
+#+TITLE My DOOM Emacs Configuration
+#+AUTHOR Daniel Pinkston
+
+* Table of Contents :toc:
+- [[#about-this-configuration][About This Configuration]]
+- [[#basic-configuration][Basic Configuration]]
+- [[#haskell-mode-configuration][Haskell Mode Configuration]]
+- [[#irc][IRC]]
+- [[#themes][Themes]]
+- [[#org][Org]]
+- [[#org-roam][Org Roam]]
+  - [[#org-roam-ui][Org Roam UI]]
+- [[#elfeed-rss-reader][Elfeed RSS Reader]]
+- [[#dashboard][Dashboard]]
+- [[#mode-line][Mode line]]
+- [[#treemacs][Treemacs]]
+- [[#custom-keybinds][Custom Keybinds]]
+  - [[#general-keybinds][General Keybinds]]
+  - [[#emms][EMMS]]
+  - [[#elfeed][Elfeed]]
+  - [[#org-roam-and-org-roam-ui][Org Roam and Org Roam UI]]
+
+* About This Configuration
+This is my personal configuration for DOOM Emacs, a "distribution/framework" that works on top of vanilla Emacs. To use my configuration, install DOOM Emacs and its dependencies. Then you can clone this repository into your =$DOOMDIR=.
+
+* Basic Configuration
+#+begin_src emacs-lisp :tangle yes
+;;;$DOOMDIR/config.el-*-lexical-binding: t;-*-
+(load "~/.config/doom/private.el")
+(setq my-credentials-file "~/.config/doom/private.el")
+
+(setq doom-font(font-spec :family "Iosevka Comfy" :size 20)
+      big-font(font-spec :family "Iosevka Comfy" :size 30)
+      variable-pitch-font(font-spec :family "Iosevka Comfy" :size 20))
+
+;; sets the cursor to always be a block
+;;(setq evil-insert-state-cursor 'box)
+
+;; make the cursor blinking
+(blink-cursor-mode 1)
+
+;; relative line numbers
+(setq display-line-numbers-type `relative)
+
+;; indent
+(setq tab-width 4)
+
+;; spellcheck
+(setq ispell-dictionary "english")
+#+end_src
+
+This sets basic things like my font, blinking cursor, and relative line numbers.
+
+* Haskell Mode Configuration
+#+begin_src emacs-lisp :tangle yes
+(defun haskell-indent-hook ()
+  "Setup variables for editing Haskell files."
+  (setq whitespace-line-column 70)
+  (make-local-variable 'tab-stop-list)
+  (setq tab-stop-list (number-sequence 2 80 2))
+  (haskell-indentation-mode 0)
+  (setq indent-line-function 'indent-relative))
+
+(add-hook 'haskell-mode-hook 'haskell-indent-hook)
+#+end_src
+
+Haskell mode indentation sucks, this makes it better. Taken from u/massyset's comment on [[https://www.reddit.com/r/haskell/comments/4zxi11/indentation_in_emacs/][this]] post on Reddit.
+
+* IRC
+#+begin_src emacs-lisp :tangle yes
+(defun my-nickserv-password (server)
+  (with-temp-buffer
+    (insert-file-contents-literally my-credentials-file)
+    (plist-get (read (buffer-string)) :nickserv-password)))
+
+(setq circe-netpersonal-options
+      '(("Libera Chat"
+         :nick "bardman"
+         :channels ("#emacs" "#gentoo")
+         :nickserv-password my-nickserv-password)))
+#+end_src
+
+* Themes
+#+begin_src emacs-lisp :tangle yes
+(setq doom-theme 'doom-gruvbox)
+(require 'modus-themes)
+(load-theme 'modus-vivendi :no-confirm)
+(define-key global-map (kbd "<f5>") #'modus-themes-toggle)
+#+end_src
+
+* Org
+#+begin_src emacs-lisp :tangle yes
+(setq org-directory "~/Notes/Org/")
+(add-hook 'after-save-hook 'org-babel-tangle)
+
+(after! org-agenda
+    (setq org-agenda-files (list "~/Notes/Org-Roam/20230202114927-todo.org")))
+#+end_src
+
+The first line sets up my org directory, which is used for my notes. The next three lines are used for org mode hooks. The last lines are used to define my org agenda files.
+
+* Org Roam
+#+begin_src emacs-lisp :tangle yes
+(setq org-roam-directory "~/Notes/Org-Roam/")
+(setq org-roam-db-autosync t)
+(require 'org-roam-export)
+
+(setq citar-bibliography "~/Notes/References/MasterLibrary.bib")
+
+(setq org-roam-capture-templates
+    '(("d" "default" plain
+          "\n* Tags: \n%? \n\n"
+          :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+          :unnarrowed t)
+      ("n" "notes" plain
+          "\n* Tags :: %? \n\n* ${title} \n"
+          :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+          :unnarrowed t)
+      ("s" "snapshot" plain
+          (file "~/Notes/Org/snapshot_template.org")
+          :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+          :unnarrowed t)
+      ("i" "idea" plain
+          "\n* Tags: \n%? \n\n"
+          :if-new (file+head "Ideas/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+          :unnarrowed t)))
+
+(setq org-roam-dailies-directory "Journal/")
+(setq org-roam-dailies-capture-templates
+      '(("d" "default" plain
+        "\n* Tags :: %? \n\n"
+        :target (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n")
+        :unnarrowed t)
+      ("s" "standup" plain
+         (file "~/Notes/Org/standup_template.org")
+         :target (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n")
+         :unnarrowed t)
+      ("r" "reflection" plain
+          "\n* Tags:: %? \n\n"
+          :target (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
+#+end_src
+
+** Org Roam UI
+#+begin_src emacs-lisp :tangle yes
+(use-package! websocket
+    :after org-roam)
+
+(use-package! org-roam-ui
+  :after org-roam
+  :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
+#+end_src
+
+* Elfeed RSS Reader
+#+begin_src emacs-lisp :tangle yes
+(elfeed-org)
+(setq rmh-elfeed-org-files (list "~/.config/doom/elfeed.org"))
+(setq elfeed-search-filter "+unread -academia")
+#+end_src
+
+* Dashboard
+#+begin_src emacs-lisp :tangle yes
+(remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
+(add-hook! '+doom-dashboard-functions :append
+(setq fancy-splash-image (concat doom-user-dir "emacswithtext.png")))
+#+end_src
+
+All this does it remove the default text on the DOOM dashboard. Depending on which theme I am using, I might uncomment the last two lines to add a splash image. The file "shinjiicon.jpeg" can be replaced with another image file in your $DOOM-DIR.
+
+* Mode line
+#+begin_src emacs-lisp :tangle yes
+(after! doom-modeline
+  (setq doom-modeline-enable-word-count t
+        doom-modeline-header-line nil
+        ;doom-modeline-hud nil
+        doom-themes-padded-modeline t))
+(add-hook! 'doom-modeline-mode-hook
+           (progn
+  (set-face-attribute 'header-line nil
+                      :background (face-background 'mode-line)
+                      :foreground (face-foreground 'mode-line))))
+
+(emms-mode-line-disable)
+(display-time)
+#+end_src
+
+This adds some things to the mode line such as word count.
+
+* Treemacs
+#+begin_src emacs-lisp :tangle yes
+(setq treemacs-width 25)
+#+end_src
+
+* Custom Keybinds
+** General Keybinds
+#+begin_src emacs-lisp :tangle yes
+(map! :leader
+      :desc "Dired jump" "pv" #'dired-jump)
+(map! :leader
+      :desc "Find file" "pf" #'dired)
+(map! :leader
+      :desc "Open doom dashboard" "oh" #'+doom-dashboard/open)
+(map! :leader
+      :desc "Open calendar" "oc" #'calendar)
+#+end_src
+
+** EMMS
+#+begin_src emacs-lisp :tangle yes
+(map! :leader
+      :desc "Open emms" "oe" #'emms)
+(map! :leader
+      :desc "Load a file into emms" "lf" #'emms-add-file)
+(map! :leader
+      :desc "Load a directory into emms" "ld" #'emms-add-directory)
+(map! :leader
+      :desc "Repeat track" "lr" #'emms-toggle-repeat-track)
+(map! :leader
+      :desc "Repeat playlist" "lp" #'emms-toggle-repeat-playlist)
+(map! :leader
+      :desc "Shuffle playlist" "ls" #'emms-shuffle)
+#+end_src
+
+** Elfeed
+#+begin_src emacs-lisp :tangle yes
+(map! :leader
+      :desc "Open rss" "rs" #'elfeed)
+(map! :leader
+      :desc "Update feeds" "ru" #'elfeed-update)
+#+end_src
+
+These bindings open and update elfeed
+
+** Org Roam and Org Roam UI
+#+begin_src emacs-lisp :tangle yes
+(map! :leader
+      :desc "Find a org roam node" "nrf" #'org-roam-node-find)
+(map! :leader
+      :desc "Find a org roam node" "nrf" #'org-roam-node-insert)
+(map! :leader
+      :desc "Open org roam ui" "ou" #'org-roam-ui-open)
+#+end_src
+
+These are my custom keybinds for stuff

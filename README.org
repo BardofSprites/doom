@@ -1,0 +1,7 @@
+#+title: README
+
+* My Doom Emacs Configuration
+
+To install, clone this repository into your DOOM Emacs directory (~/.config/doom or ~/.doom.d), and then run doom sync to rebuild doom.
+
+Most configuration is done inside config.org, and is documented with comments underneath because it is a literate configuration.

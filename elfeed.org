@@ -1,0 +1,29 @@
+#+title: Elfeed
+
+* Feeds :elfeed:
+** Religion :God:
+*** https://www.reddit.com/r/OrthodoxChristianity.rss :social:
+*** http://orthochristian.com/xml/rss.xml
+** Developer Blogs :dev:
+*** https://dev.to/feed/craftzdog
+*** http://curiousprogrammer.wordpress.com/feed/
+*** https://www.reddit.com/r/programming.rss :social:
+*** https://protesilaos.com/codelog.xml
+** Update feeds :news:
+*** https://emacsconf.org/index.rss :emacs:
+*** https://security.gentoo.org/glsa/feed.rss :linux:
+** Youtube Channels :youtube:
+*** [[https://www.youtube.com/@TrashTaste]] :podcast:
+** Reddit :social:
+*** https://www.reddit.com/r/ImaginarySliceOfLife.rss :art:
+*** https://www.reddit.com/r/wallpaper.rss :art:
+*** https://www.reddit.com/r/artporn.rss :art:
+*** https://www.reddit.com/r/WholesomeSliceOfLife.rss :art:
+*** https://www.reddit.com/r/ImaginaryAww.rss :art:
+*** Dev :dev:
+**** https://reddit.com/r/gentoo.rss :linux:
+**** https://www.reddit.com/r/emacs.rss
+**** https://reddit.com/r/unixporn.rss :ricing:
+** Smart things :academia:
+*** Papers :papers:
+**** http://arxiv.org/rss/cs
