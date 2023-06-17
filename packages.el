@@ -21,3 +21,5 @@
 (package! ef-themes)
 
 (package! org-mime)
+
+(package! ox-tufte)
