@@ -8,6 +8,7 @@
 - [[#irc][IRC]]
 - [[#themes][Themes]]
 - [[#org][Org]]
+- [[#latex][Latex]]
 - [[#org-roam][Org Roam]]
   - [[#org-roam-ui][Org Roam UI]]
 - [[#elfeed-rss-reader][Elfeed RSS Reader]]
@@ -99,6 +100,14 @@ Haskell mode indentation sucks, this makes it better. Taken from u/massyset's co
 
 The first line sets up my org directory, which is used for my notes. The next three lines are used for org mode hooks. The last lines are used to define my org agenda files.
 
+* Latex
+#+begin_src emacs-lisp :tangle yes
+(use-package ox-moderncv
+    :load-path "~/.config/emacs/.local/org-cv"
+    :init (require 'ox-moderncv))
+(require 'ox-tufte)
+#+end_src
+
 * Org Roam
 #+begin_src emacs-lisp :tangle yes
 (setq org-roam-directory "~/Notes/Org-Roam/")
@@ -110,19 +119,19 @@ The first line sets up my org directory, which is used for my notes. The next th
 (setq org-roam-capture-templates
     '(("d" "default" plain
           "\n* Tags: \n%? \n\n"
-          :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+          :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
           :unnarrowed t)
       ("n" "notes" plain
-          "\n* Tags :: %? \n\n* ${title} \n"
-          :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+          "\n\n* Tags :: %? \n\n* ${title} \n"
+          :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
           :unnarrowed t)
       ("s" "snapshot" plain
           (file "~/Notes/Org/snapshot_template.org")
-          :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+          :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
           :unnarrowed t)
       ("i" "idea" plain
           "\n* Tags: \n%? \n\n"
-          :if-new (file+head "Ideas/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+          :if-new (file+head "Ideas/%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
           :unnarrowed t)))
 
 (setq org-roam-dailies-directory "Journal/")

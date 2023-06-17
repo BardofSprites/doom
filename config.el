@@ -53,6 +53,11 @@
 (after! org-agenda
     (setq org-agenda-files (list "~/Notes/Org-Roam/20230202114927-todo.org")))
 
+(use-package ox-moderncv
+    :load-path "~/.config/emacs/.local/org-cv"
+    :init (require 'ox-moderncv))
+(require 'ox-tufte)
+
 (setq org-roam-directory "~/Notes/Org-Roam/")
 (setq org-roam-db-autosync t)
 (require 'org-roam-export)
@@ -62,19 +67,19 @@
 (setq org-roam-capture-templates
     '(("d" "default" plain
           "\n* Tags: \n%? \n\n"
-          :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+          :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
           :unnarrowed t)
       ("n" "notes" plain
-          "\n* Tags :: %? \n\n* ${title} \n"
-          :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+          "\n\n* Tags :: %? \n\n* ${title} \n"
+          :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
           :unnarrowed t)
       ("s" "snapshot" plain
           (file "~/Notes/Org/snapshot_template.org")
-          :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+          :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
           :unnarrowed t)
       ("i" "idea" plain
           "\n* Tags: \n%? \n\n"
-          :if-new (file+head "Ideas/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+          :if-new (file+head "Ideas/%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
           :unnarrowed t)))
 
 (setq org-roam-dailies-directory "Journal/")
