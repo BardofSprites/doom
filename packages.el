@@ -23,3 +23,8 @@
 (package! org-mime)
 
 (package! ox-tufte)
+
+(package! sly :disable t)
+(package! sly-macrostep :disable t)
+(package! sly-repl-ansi-color :disable t)
+(package! slime)
