@@ -5,10 +5,10 @@
 - [[#about-this-configuration][About This Configuration]]
 - [[#basic-configuration][Basic Configuration]]
 - [[#haskell-mode-configuration][Haskell Mode Configuration]]
-- [[#irc][IRC]]
+- [[#haskell][Haskell]]
+- [[#common-lisp][Common Lisp]]
 - [[#themes][Themes]]
 - [[#org][Org]]
-- [[#latex][Latex]]
 - [[#org-roam][Org Roam]]
   - [[#org-roam-ui][Org Roam UI]]
 - [[#elfeed-rss-reader][Elfeed RSS Reader]]
@@ -27,9 +27,6 @@ This is my personal configuration for DOOM Emacs, a "distribution/framework" tha
 * Basic Configuration
 #+begin_src emacs-lisp :tangle yes
 ;;;$DOOMDIR/config.el-*-lexical-binding: t;-*-
-(load "~/.config/doom/private.el")
-(setq my-credentials-file "~/.config/doom/private.el")
-
 (setq doom-font(font-spec :family "Iosevka Comfy" :size 20)
       big-font(font-spec :family "Iosevka Comfy" :size 30)
       variable-pitch-font(font-spec :family "Iosevka Comfy" :size 20))
@@ -67,19 +64,16 @@ This sets basic things like my font, blinking cursor, and relative line numbers.
 
 Haskell mode indentation sucks, this makes it better. Taken from u/massyset's comment on [[https://www.reddit.com/r/haskell/comments/4zxi11/indentation_in_emacs/][this]] post on Reddit.
 
-* IRC
+* Haskell
 #+begin_src emacs-lisp :tangle yes
-(defun my-nickserv-password (server)
-  (with-temp-buffer
-    (insert-file-contents-literally my-credentials-file)
-    (plist-get (read (buffer-string)) :nickserv-password)))
-
-(setq circe-netpersonal-options
-      '(("Libera Chat"
-         :nick "bardman"
-         :channels ("#emacs" "#gentoo")
-         :nickserv-password my-nickserv-password)))
+(setq haskell-interactive-popup-errors nil)
 #+end_src
+
+* Common Lisp
+#+begin_src emacs-lisp :tangle yes
+(setq inferior-lisp-program "clisp")
+#+end_src
+This is a section for configuring the common LISP tool, sly.
 
 * Themes
 #+begin_src emacs-lisp :tangle yes
@@ -95,18 +89,10 @@ Haskell mode indentation sucks, this makes it better. Taken from u/massyset's co
 (add-hook 'after-save-hook 'org-babel-tangle)
 
 (after! org-agenda
-    (setq org-agenda-files (list "~/Notes/Org-Roam/20230202114927-todo.org")))
+    (setq org-agenda-files (list "~/Notes/Org-Roam/todo.org")))
 #+end_src
 
 The first line sets up my org directory, which is used for my notes. The next three lines are used for org mode hooks. The last lines are used to define my org agenda files.
-
-* Latex
-#+begin_src emacs-lisp :tangle yes
-(use-package ox-moderncv
-    :load-path "~/.config/emacs/.local/org-cv"
-    :init (require 'ox-moderncv))
-(require 'ox-tufte)
-#+end_src
 
 * Org Roam
 #+begin_src emacs-lisp :tangle yes
@@ -122,7 +108,7 @@ The first line sets up my org directory, which is used for my notes. The next th
           :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
           :unnarrowed t)
       ("n" "notes" plain
-          "\n\n* Tags :: %? \n\n* ${title} \n"
+          "\n\n\n* Tags :: %? \n\n* ${title} \n"
           :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
           :unnarrowed t)
       ("s" "snapshot" plain
@@ -252,4 +238,4 @@ These bindings open and update elfeed
       :desc "Open org roam ui" "ou" #'org-roam-ui-open)
 #+end_src
 
-These are my custom keybinds for stuff
+These are my custom keybinds for functions relating to Org Roam.

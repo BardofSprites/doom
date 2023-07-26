@@ -1,7 +1,4 @@
 ;;;$DOOMDIR/config.el-*-lexical-binding: t;-*-
-(load "~/.config/doom/private.el")
-(setq my-credentials-file "~/.config/doom/private.el")
-
 (setq doom-font(font-spec :family "Iosevka Comfy" :size 20)
       big-font(font-spec :family "Iosevka Comfy" :size 30)
       variable-pitch-font(font-spec :family "Iosevka Comfy" :size 20))
@@ -31,16 +28,9 @@
 
 (add-hook 'haskell-mode-hook 'haskell-indent-hook)
 
-(defun my-nickserv-password (server)
-  (with-temp-buffer
-    (insert-file-contents-literally my-credentials-file)
-    (plist-get (read (buffer-string)) :nickserv-password)))
+(setq haskell-interactive-popup-errors nil)
 
-(setq circe-netpersonal-options
-      '(("Libera Chat"
-         :nick "bardman"
-         :channels ("#emacs" "#gentoo")
-         :nickserv-password my-nickserv-password)))
+(setq inferior-lisp-program "clisp")
 
 (setq doom-theme 'doom-gruvbox)
 (require 'modus-themes)
@@ -51,12 +41,7 @@
 (add-hook 'after-save-hook 'org-babel-tangle)
 
 (after! org-agenda
-    (setq org-agenda-files (list "~/Notes/Org-Roam/20230202114927-todo.org")))
-
-(use-package ox-moderncv
-    :load-path "~/.config/emacs/.local/org-cv"
-    :init (require 'ox-moderncv))
-(require 'ox-tufte)
+    (setq org-agenda-files (list "~/Notes/Org-Roam/todo.org")))
 
 (setq org-roam-directory "~/Notes/Org-Roam/")
 (setq org-roam-db-autosync t)
@@ -70,7 +55,7 @@
           :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
           :unnarrowed t)
       ("n" "notes" plain
-          "\n\n* Tags :: %? \n\n* ${title} \n"
+          "\n\n\n* Tags :: %? \n\n* ${title} \n"
           :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
           :unnarrowed t)
       ("s" "snapshot" plain
