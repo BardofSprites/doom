@@ -1,7 +1,8 @@
 ;;;$DOOMDIR/config.el-*-lexical-binding: t;-*-
 (setq doom-font(font-spec :family "Iosevka Comfy" :size 20)
       big-font(font-spec :family "Iosevka Comfy" :size 30)
-      variable-pitch-font(font-spec :family "Iosevka Comfy" :size 20))
+      variable-pitch-font(font-spec :family "Iosevka Comfy" :size 20)
+      mixed-pitch-font(font-spec :family "terminus" :size 20))
 
 ;; sets the cursor to always be a block
 ;;(setq evil-insert-state-cursor 'box)
@@ -18,30 +19,46 @@
 ;; spellcheck
 (setq ispell-dictionary "english")
 
-(defun haskell-indent-hook ()
-  "Setup variables for editing Haskell files."
-  (setq whitespace-line-column 70)
-  (make-local-variable 'tab-stop-list)
-  (setq tab-stop-list (number-sequence 2 80 2))
-  (haskell-indentation-mode 0)
-  (setq indent-line-function 'indent-relative))
-
-(add-hook 'haskell-mode-hook 'haskell-indent-hook)
-
 (setq haskell-interactive-popup-errors nil)
 
 (setq inferior-lisp-program "clisp")
 
-(setq doom-theme 'doom-gruvbox)
+(setq doom-theme 'doom-gruvbox-light)
 (require 'modus-themes)
+
 (load-theme 'modus-vivendi :no-confirm)
 (define-key global-map (kbd "<f5>") #'modus-themes-toggle)
 
-(setq org-directory "~/Notes/Org/")
+(setq org-directory "~/Notes/Org-Roam/")
 (add-hook 'after-save-hook 'org-babel-tangle)
 
 (after! org-agenda
     (setq org-agenda-files (list "~/Notes/Org-Roam/todo.org")))
+
+;;(setq org-agenda-block-separator 8411)
+
+(setq org-agenda-custom-commands
+(setq org-agenda-custom-commands
+      `(("A" "Daily agenda and top priority tasks"
+         ((tags-todo "*"
+                     ((org-agenda-skip-function '(org-agenda-skip-if nil '(timestamp)))
+                      (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                      (org-agenda-overriding-header "Tasks without a date\n")))
+          (agenda "" ((org-agenda-span 1)
+                      (org-agenda-start-day nil)
+                      (org-deadline-warning-days 0)
+                      (org-scheduled-past-days 0)
+                      ;; We don't need the `org-agenda-date-today'
+                      ;; highlight because that only has a practical
+                      ;; utility in multi-day views.
+                      (org-agenda-day-face-function (lambda (date) 'org-agenda-date))
+                      (org-agenda-format-date "%A %-e %B %Y")
+                      (org-agenda-overriding-header "\nToday's agenda\n")))
+          ;; write skip function that skips saturdays and sundays
+         (agenda "" ((org-agenda-span 7)
+                     (org-deadline-warning-days 0)
+                     (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                     (org-agenda-overriding-header "\n Upcoming this week\n"))))))))
 
 (setq org-roam-directory "~/Notes/Org-Roam/")
 (setq org-roam-db-autosync t)
@@ -56,6 +73,14 @@
           :unnarrowed t)
       ("n" "notes" plain
           "\n\n\n* Tags :: %? \n\n* ${title} \n"
+          :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
+          :unnarrowed t)
+      ("b" "bio" plain
+          "#+ANKI_DECK: Bio \n\n* Tags :: [[id:cfe7bda9-b154-4d6b-989f-6af778a98cbd][Biology]] \n\n* %? \n"
+          :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
+          :unnarrowed t)
+      ("u" "apush" plain
+          "#+ANKI_DECK: APUSH \n\n\n* Tags :: [[id:06334c1d-5c06-4b70-bfd8-a074c0c36706][APUSH]] \n\n* %? \n"
           :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
           :unnarrowed t)
       ("s" "snapshot" plain
@@ -149,3 +174,8 @@
       :desc "Find a org roam node" "nrf" #'org-roam-node-insert)
 (map! :leader
       :desc "Open org roam ui" "ou" #'org-roam-ui-open)
+
+(map! :leader
+      :desc "Sync anki card at entry" "nA" #'org-anki-sync-entry)
+(map! :leader
+      :desc "Delete anki card at entry" "nD" #'org-anki-delete-entry)

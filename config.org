@@ -20,6 +20,7 @@
   - [[#emms][EMMS]]
   - [[#elfeed][Elfeed]]
   - [[#org-roam-and-org-roam-ui][Org Roam and Org Roam UI]]
+  - [[#org-anki][Org Anki]]
 
 * About This Configuration
 This is my personal configuration for DOOM Emacs, a "distribution/framework" that works on top of vanilla Emacs. To use my configuration, install DOOM Emacs and its dependencies. Then you can clone this repository into your =$DOOMDIR=.
@@ -29,7 +30,8 @@ This is my personal configuration for DOOM Emacs, a "distribution/framework" tha
 ;;;$DOOMDIR/config.el-*-lexical-binding: t;-*-
 (setq doom-font(font-spec :family "Iosevka Comfy" :size 20)
       big-font(font-spec :family "Iosevka Comfy" :size 30)
-      variable-pitch-font(font-spec :family "Iosevka Comfy" :size 20))
+      variable-pitch-font(font-spec :family "Iosevka Comfy" :size 20)
+      mixed-pitch-font(font-spec :family "terminus" :size 20))
 
 ;; sets the cursor to always be a block
 ;;(setq evil-insert-state-cursor 'box)
@@ -50,7 +52,7 @@ This is my personal configuration for DOOM Emacs, a "distribution/framework" tha
 This sets basic things like my font, blinking cursor, and relative line numbers.
 
 * Haskell Mode Configuration
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (defun haskell-indent-hook ()
   "Setup variables for editing Haskell files."
   (setq whitespace-line-column 70)
@@ -77,19 +79,45 @@ This is a section for configuring the common LISP tool, sly.
 
 * Themes
 #+begin_src emacs-lisp :tangle yes
-(setq doom-theme 'doom-gruvbox)
+(setq doom-theme 'doom-gruvbox-light)
 (require 'modus-themes)
+
 (load-theme 'modus-vivendi :no-confirm)
 (define-key global-map (kbd "<f5>") #'modus-themes-toggle)
 #+end_src
 
 * Org
 #+begin_src emacs-lisp :tangle yes
-(setq org-directory "~/Notes/Org/")
+(setq org-directory "~/Notes/Org-Roam/")
 (add-hook 'after-save-hook 'org-babel-tangle)
 
 (after! org-agenda
     (setq org-agenda-files (list "~/Notes/Org-Roam/todo.org")))
+
+;;(setq org-agenda-block-separator 8411)
+
+(setq org-agenda-custom-commands
+(setq org-agenda-custom-commands
+      `(("A" "Daily agenda and top priority tasks"
+         ((tags-todo "*"
+                     ((org-agenda-skip-function '(org-agenda-skip-if nil '(timestamp)))
+                      (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                      (org-agenda-overriding-header "Tasks without a date\n")))
+          (agenda "" ((org-agenda-span 1)
+                      (org-agenda-start-day nil)
+                      (org-deadline-warning-days 0)
+                      (org-scheduled-past-days 0)
+                      ;; We don't need the `org-agenda-date-today'
+                      ;; highlight because that only has a practical
+                      ;; utility in multi-day views.
+                      (org-agenda-day-face-function (lambda (date) 'org-agenda-date))
+                      (org-agenda-format-date "%A %-e %B %Y")
+                      (org-agenda-overriding-header "\nToday's agenda\n")))
+          ;; write skip function that skips saturdays and sundays
+         (agenda "" ((org-agenda-span 7)
+                     (org-deadline-warning-days 0)
+                     (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                     (org-agenda-overriding-header "\n Upcoming this week\n"))))))))
 #+end_src
 
 The first line sets up my org directory, which is used for my notes. The next three lines are used for org mode hooks. The last lines are used to define my org agenda files.
@@ -109,6 +137,14 @@ The first line sets up my org directory, which is used for my notes. The next th
           :unnarrowed t)
       ("n" "notes" plain
           "\n\n\n* Tags :: %? \n\n* ${title} \n"
+          :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
+          :unnarrowed t)
+      ("b" "bio" plain
+          "#+ANKI_DECK: Bio \n\n* Tags :: [[id:cfe7bda9-b154-4d6b-989f-6af778a98cbd][Biology]] \n\n* %? \n"
+          :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
+          :unnarrowed t)
+      ("u" "apush" plain
+          "#+ANKI_DECK: APUSH \n\n\n* Tags :: [[id:06334c1d-5c06-4b70-bfd8-a074c0c36706][APUSH]] \n\n* %? \n"
           :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
           :unnarrowed t)
       ("s" "snapshot" plain
@@ -239,3 +275,11 @@ These bindings open and update elfeed
 #+end_src
 
 These are my custom keybinds for functions relating to Org Roam.
+
+** Org Anki
+#+begin_src emacs-lisp :tangle yes
+(map! :leader
+      :desc "Sync anki card at entry" "nA" #'org-anki-sync-entry)
+(map! :leader
+      :desc "Delete anki card at entry" "nD" #'org-anki-delete-entry)
+#+end_src

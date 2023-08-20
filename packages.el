@@ -20,6 +20,8 @@
 
 (package! ef-themes)
 
+(package! zenburn-theme)
+
 (package! org-mime)
 
 (package! ox-tufte)
@@ -28,3 +30,9 @@
 (package! sly-macrostep :disable t)
 (package! sly-repl-ansi-color :disable t)
 (package! slime)
+
+(package! csv-mode)
+
+(package! org-anki)
+
+(package! org-fancy-priorities)
