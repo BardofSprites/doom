@@ -35,6 +35,8 @@
 (after! org-agenda
     (setq org-agenda-files (list "~/Notes/Org-Roam/todo.org")))
 
+(define-key global-map (kbd "<f6>") #'org-agenda)
+
 ;;(setq org-agenda-block-separator 8411)
 
 (setq org-agenda-custom-commands

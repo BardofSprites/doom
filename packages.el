@@ -4,25 +4,17 @@
 ;; (package! copilot
 ;;   :recipe (:host github :repo "zerolfx/copilot.el" :files ("*.el" "dist")))
 
-(package! org-present)
-
 (package! org-roam)
 
 (package! citar)
 
 (package! org-roam-ui)
 
-(package! devdocs)
-
 (package! circe)
 
 (package! modus-themes)
 
 (package! ef-themes)
-
-(package! zenburn-theme)
-
-(package! org-mime)
 
 (package! ox-tufte)
 
@@ -34,5 +26,3 @@
 (package! csv-mode)
 
 (package! org-anki)
-
-(package! org-fancy-priorities)
