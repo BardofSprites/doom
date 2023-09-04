@@ -4,7 +4,7 @@
       variable-pitch-font(font-spec :family "Iosevka Comfy Wide"))
 
 ;; Custom Set faces
-(custom-set-faces '(org-agenda-structure ((t (:height 1.5)))))
+;;(custom-set-faces '(org-agenda-structure ((t (:height 1.5)))))
 
 ;; sets the cursor to always be a block
 ;;(setq evil-insert-state-cursor 'box)
@@ -21,6 +21,8 @@
 ;; spellcheck
 (setq ispell-dictionary "english")
 
+(setq cider-stacktrace-supressed-errors t)
+
 (setq haskell-interactive-popup-errors nil)
 
 (setq inferior-lisp-program "clisp")
@@ -30,6 +32,13 @@
 
 (load-theme 'modus-vivendi :no-confirm)
 (define-key global-map (kbd "<f5>") #'modus-themes-toggle)
+
+(setq ef-themes-headings
+      '((1 variable-pitch 1.3)
+        (2 regular 1.2)
+        (3 1.1)
+        (agenda-structure variable-pitch 1.5)
+        (t variable-pitch)))
 
 (setq org-directory "~/Notes/Org-Roam/")
 (add-hook 'after-save-hook 'org-babel-tangle)
@@ -196,6 +205,20 @@
 (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
 (add-hook! '+doom-dashboard-functions :append
   (setq fancy-splash-image (concat doom-user-dir "emacswithtext.png")))
+
+(after! doom-modeline
+  (setq doom-modeline-enable-word-count t
+        doom-modeline-header-line nil
+        doom-modeline-icon nil
+        doom-themes-padded-modeline t))
+(add-hook! 'doom-modeline-mode-hook
+  (progn
+    (set-face-attribute 'header-line nil
+                        :background (face-background 'mode-line)
+                        :foreground (face-foreground 'mode-line))))
+
+(emms-mode-line-disable)
+(display-time)
 
 (setq treemacs-width 25)
 
