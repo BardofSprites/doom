@@ -23,18 +23,19 @@
 
 (setq cider-stacktrace-supressed-errors t)
 
-(setq haskell-interactive-popup-errors nil)
-
 (setq inferior-lisp-program "clisp")
 
 (setq doom-theme 'doom-gruvbox-light)
 (require 'modus-themes)
 
-(load-theme 'modus-vivendi :no-confirm)
-(define-key global-map (kbd "<f5>") #'modus-themes-toggle)
+(load-theme 'ef-autumn :no-confirm)
+(define-key global-map (kbd "<f5>") #'ef-themes-toggle)
+
+(setq ef-themes-to-toggle '(ef-autumn ef-day))
 
 (setq ef-themes-headings
-      '((1 variable-pitch 1.3)
+      '((0 variable-pitch 1.8)
+        (1 variable-pitch 1.3)
         (2 regular 1.2)
         (3 1.1)
         (agenda-structure variable-pitch 1.5)
@@ -55,7 +56,7 @@
          ((tags-todo "*"
                      ((org-agenda-skip-function '(org-agenda-skip-if nil '(timestamp)))
                       (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                      (org-agenda-overriding-header "Tasks without a date \n")))
+                      (org-agenda-overriding-header "All Tasks \n")))
           (agenda "" ((org-agenda-span 1)
                       (org-agenda-start-day nil)
                       (org-deadline-warning-days 0)
@@ -71,6 +72,11 @@
                       (org-deadline-warning-days 0)
                       (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
                       (org-agenda-overriding-header "Upcoming this week \n")))))
+        ("Y" "Monthly view for all tasks"
+         ((agenda "" ((org-agenda-span 365)
+                      (org-deadline-warning-days 2)
+                      (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                      (org-agenda-overriding-header "Upcoming this Year\n")))))
         ("S" "Monthly view for all tasks"
          ((agenda "" ((org-agenda-span 31)
                       (org-deadline-warning-days 2)
@@ -260,3 +266,5 @@
       :desc "Sync anki card at entry" "nA" #'org-anki-sync-entry)
 (map! :leader
       :desc "Delete anki card at entry" "nD" #'org-anki-delete-entry)
+(map! :leader
+      :desc "Browse card at entry in Anki browser" "nB" #'org-anki-browse-entry)

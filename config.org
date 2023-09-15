@@ -5,13 +5,11 @@
 - [[#about-this-configuration][About This Configuration]]
 - [[#basic-configuration][Basic Configuration]]
 - [[#clojurecider-configuration][Clojure/Cider Configuration]]
-- [[#haskell-mode-configuration][Haskell Mode Configuration]]
 - [[#haskell][Haskell]]
 - [[#common-lisp][Common Lisp]]
 - [[#themes][Themes]]
 - [[#org][Org]]
   - [[#org-agenda-functions][Org Agenda functions]]
-  - [[#testing-functions][Testing functions]]
   - [[#custom-assignment-deadline-function][Custom Assignment Deadline Function]]
   - [[#time-variables][Time Variables]]
 - [[#org-roam][Org Roam]]
@@ -63,7 +61,7 @@ This sets basic things like my font, blinking cursor, and relative line numbers.
 (setq cider-stacktrace-supressed-errors t)
 #+end_src
 
-* Haskell Mode Configuration
+* Haskell
 #+begin_src emacs-lisp :tangle no
 (defun haskell-indent-hook ()
   "Setup variables for editing Haskell files."
@@ -74,14 +72,10 @@ This sets basic things like my font, blinking cursor, and relative line numbers.
   (setq indent-line-function 'indent-relative))
 
 (add-hook 'haskell-mode-hook 'haskell-indent-hook)
+(setq haskell-interactive-popup-errors nil)
 #+end_src
 
 Haskell mode indentation sucks, this makes it better. Taken from u/massyset's comment on [[https://www.reddit.com/r/haskell/comments/4zxi11/indentation_in_emacs/][this]] post on Reddit.
-
-* Haskell
-#+begin_src emacs-lisp :tangle yes
-(setq haskell-interactive-popup-errors nil)
-#+end_src
 
 * Common Lisp
 #+begin_src emacs-lisp :tangle yes
@@ -94,11 +88,14 @@ This is a section for configuring the common LISP tool, sly.
 (setq doom-theme 'doom-gruvbox-light)
 (require 'modus-themes)
 
-(load-theme 'modus-vivendi :no-confirm)
-(define-key global-map (kbd "<f5>") #'modus-themes-toggle)
+(load-theme 'ef-autumn :no-confirm)
+(define-key global-map (kbd "<f5>") #'ef-themes-toggle)
+
+(setq ef-themes-to-toggle '(ef-autumn ef-day))
 
 (setq ef-themes-headings
-      '((1 variable-pitch 1.3)
+      '((0 variable-pitch 1.8)
+        (1 variable-pitch 1.3)
         (2 regular 1.2)
         (3 1.1)
         (agenda-structure variable-pitch 1.5)
@@ -123,7 +120,7 @@ This is a section for configuring the common LISP tool, sly.
          ((tags-todo "*"
                      ((org-agenda-skip-function '(org-agenda-skip-if nil '(timestamp)))
                       (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                      (org-agenda-overriding-header "Tasks without a date \n")))
+                      (org-agenda-overriding-header "All Tasks \n")))
           (agenda "" ((org-agenda-span 1)
                       (org-agenda-start-day nil)
                       (org-deadline-warning-days 0)
@@ -139,6 +136,11 @@ This is a section for configuring the common LISP tool, sly.
                       (org-deadline-warning-days 0)
                       (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
                       (org-agenda-overriding-header "Upcoming this week \n")))))
+        ("Y" "Monthly view for all tasks"
+         ((agenda "" ((org-agenda-span 365)
+                      (org-deadline-warning-days 2)
+                      (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                      (org-agenda-overriding-header "Upcoming this Year\n")))))
         ("S" "Monthly view for all tasks"
          ((agenda "" ((org-agenda-span 31)
                       (org-deadline-warning-days 2)
@@ -146,7 +148,6 @@ This is a section for configuring the common LISP tool, sly.
                       (org-agenda-overriding-header "Upcoming this month\n")))))))
 #+end_src
 
-** Testing functions
 ** Custom Assignment Deadline Function
 #+begin_src emacs-lisp :tangle yes
 (defun bard/assignment-due-time (day period)
@@ -378,4 +379,6 @@ These are my custom keybinds for functions relating to Org Roam.
       :desc "Sync anki card at entry" "nA" #'org-anki-sync-entry)
 (map! :leader
       :desc "Delete anki card at entry" "nD" #'org-anki-delete-entry)
+(map! :leader
+      :desc "Browse card at entry in Anki browser" "nB" #'org-anki-browse-entry)
 #+end_src

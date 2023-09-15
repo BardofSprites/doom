@@ -1,14 +1,19 @@
 #+title: Elfeed
 
 * Feeds :elfeed:
-** Religion :God:
-*** http://orthochristian.com/xml/rss.xml
 ** Developer Blogs :dev:
 *** https://dev.to/feed/craftzdog
 *** https://protesilaos.com/codelog.xml
 ** Update feeds :news:
 *** https://emacsconf.org/index.rss :emacs:
 *** https://security.gentoo.org/glsa/feed.rss :linux:
-** Smart things :academia:
-*** Papers :papers:
-**** http://arxiv.org/rss/cs
+** Articles :academia:
+*** http://arxiv.org/rss/cs
+** Youtube :video:
+*** Developer Channels :dev:
+*** Music :music:
+*** Japanese
+*** Video games
+*** Russian :rus:
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCqPgsbcoU1jlvSj7U7DHLrg][Джо Шизо]]
+*** General
