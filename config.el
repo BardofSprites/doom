@@ -236,6 +236,8 @@
       :desc "Open doom dashboard" "oh" #'+doom-dashboard/open)
 (map! :leader
       :desc "Open calendar" "oc" #'calendar)
+(map! :leader
+      :desc "Open eshell" "ot" #'eshell)
 
 (map! :leader
       :desc "Open emms" "oe" #'emms)

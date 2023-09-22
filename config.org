@@ -333,6 +333,8 @@ This adds some things to the mode line such as word count.
       :desc "Open doom dashboard" "oh" #'+doom-dashboard/open)
 (map! :leader
       :desc "Open calendar" "oc" #'calendar)
+(map! :leader
+      :desc "Open eshell" "ot" #'eshell)
 #+end_src
 
 ** EMMS
