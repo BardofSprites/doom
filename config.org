@@ -9,6 +9,7 @@
 - [[#common-lisp][Common Lisp]]
 - [[#themes][Themes]]
 - [[#org][Org]]
+  - [[#capture-templates][Capture Templates]]
   - [[#org-agenda-functions][Org Agenda functions]]
   - [[#custom-assignment-deadline-function][Custom Assignment Deadline Function]]
   - [[#time-variables][Time Variables]]
@@ -91,7 +92,7 @@ This is a section for configuring the common LISP tool, sly.
 (load-theme 'ef-autumn :no-confirm)
 (define-key global-map (kbd "<f5>") #'ef-themes-toggle)
 
-(setq ef-themes-to-toggle '(ef-autumn ef-day))
+(setq ef-themes-to-toggle '(ef-autumn ef-cyprus))
 
 (setq ef-themes-headings
       '((0 variable-pitch 1.8)
@@ -103,6 +104,18 @@ This is a section for configuring the common LISP tool, sly.
 #+end_src
 
 * Org
+** Capture Templates
+#+begin_src emacs-lisp :tangle yes
+(setq org-capture-templates
+      '(("h" "Homework" entry (file+olp "~/Notes/Org-Roam/todo.org" "Inbox" "Homework")
+         "* TODO %?")
+        ("r" "Reading List" entry (file+olp "~/Notes/Org-Roam/todo.org" "Inbox" "Watch/Read List")
+         "* %?")
+        ("j" "Journal" entry (file+datetree "~/Notes/Org-Roam/journal.org")
+         "* %U %^{Title}\n  %?")
+        ("a" "Appointment" entry (file+heading "~/Notes/Org-Roam/todo.org" "Appointment")
+         "* %^{Task}\n  %^t\n  %?")))
+  #+end_src
 ** Org Agenda functions
 #+begin_src emacs-lisp :tangle yes
 (setq org-directory "~/Notes/Org-Roam/")
@@ -147,7 +160,6 @@ This is a section for configuring the common LISP tool, sly.
                       (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
                       (org-agenda-overriding-header "Upcoming this month\n")))))))
 #+end_src
-
 ** Custom Assignment Deadline Function
 #+begin_src emacs-lisp :tangle yes
 (defun bard/assignment-due-time (day period)

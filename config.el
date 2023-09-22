@@ -31,7 +31,7 @@
 (load-theme 'ef-autumn :no-confirm)
 (define-key global-map (kbd "<f5>") #'ef-themes-toggle)
 
-(setq ef-themes-to-toggle '(ef-autumn ef-day))
+(setq ef-themes-to-toggle '(ef-autumn ef-cyprus))
 
 (setq ef-themes-headings
       '((0 variable-pitch 1.8)
@@ -40,6 +40,16 @@
         (3 1.1)
         (agenda-structure variable-pitch 1.5)
         (t variable-pitch)))
+
+(setq org-capture-templates
+      '(("h" "Homework" entry (file+olp "~/Notes/Org-Roam/todo.org" "Inbox" "Homework")
+         "* TODO %?")
+        ("r" "Reading List" entry (file+olp "~/Notes/Org-Roam/todo.org" "Inbox" "Watch/Read List")
+         "* %?")
+        ("j" "Journal" entry (file+datetree "~/Notes/Org-Roam/journal.org")
+         "* %U %^{Title}\n  %?")
+        ("a" "Appointment" entry (file+heading "~/Notes/Org-Roam/todo.org" "Appointment")
+         "* %^{Task}\n  %^t\n  %?")))
 
 (setq org-directory "~/Notes/Org-Roam/")
 (add-hook 'after-save-hook 'org-babel-tangle)
